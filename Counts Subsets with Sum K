@@ -84,3 +84,32 @@ int findWays(vector<int> &arr, int k) {
   return dp[n-1][k];
 }
 
+
+Above all the code is written by taking constraint 1<=arr[i]<=10^4 .
+i.e., array does not contain zero as element.
+Now let suppose constraint are changed - 0<=arr[i]<=10^4 
+
+only the base case will change and remaining is same. 
+
+#define MOD 1000000007
+int fun(int ind, int target, vector<int> &arr, vector<vector<int>> &dp) {
+
+if(ind==0) {
+  if(sum==0 and arr[0]==0) return 2;
+  if(sum==0 or sum==arr[0]) return 1;
+  return 0;
+}
+
+  if (dp[ind][target] != -1)
+    return dp[ind][target];
+
+  int notake = fun(ind - 1, target, arr, dp);
+  int take = 0;
+  if (arr[ind] <= target)
+    take = fun(ind - 1, target - arr[ind], arr, dp);
+
+  return dp[ind][target] = (take%MOD + notake%MOD)%MOD;
+}
+
+dry run for : input: arr[0,0,1] and sum=1
+               output: 4
