@@ -1,0 +1,74 @@
+//Problem link: https://www.codingninjas.com/studio/problems/unbounded-knapsack_1215029
+
+//Simple Recursion
+#include <bits/stdc++.h>
+int fun(int ind, int W, vector<int> &profit, vector<int> &wt ){
+    if(ind==0){
+        return W/wt[0]*profit[0];
+    }
+
+    int notake=fun(ind-1,W,profit,wt);
+    int take=INT_MIN;
+    if(wt[ind]<=W)
+     take=profit[ind]+fun(ind,W-wt[ind],profit,wt);
+
+    return max(take,notake); 
+}
+int unboundedKnapsack(int n, int w, vector<int> &profit, vector<int> &weight)
+{
+    // Write Your Code Here.
+    return fun(n-1,w,profit,weight);
+}
+
+
+// Recursion with Memoization ~ Top down Approach
+#include <bits/stdc++.h>
+int fun(int ind, int W, vector<int> &profit, vector<int> &wt, vector<vector<int>>&dp){
+    if(ind==0){
+        return W/wt[0]*profit[0];
+    }
+    
+    if(dp[ind][W]!=-1)
+     return dp[ind][W];
+
+    int notake=fun(ind-1,W,profit,wt,dp);
+    int take=INT_MIN;
+    if(wt[ind]<=W)
+     take=profit[ind]+fun(ind,W-wt[ind],profit,wt,dp);
+
+    return dp[ind][W]=max(take,notake); 
+}
+int unboundedKnapsack(int n, int w, vector<int> &profit, vector<int> &weight)
+{
+    // Write Your Code Here.
+    vector<vector<int>>dp(n,vector<int>(w+1,-1));
+    return fun(n-1,w,profit,weight,dp);
+}
+
+
+// Bottom up Approach
+#include <bits/stdc++.h>
+int unboundedKnapsack(int n, int w, vector<int> &profit, vector<int> &weight)
+{
+    // Write Your Code Here.
+    vector<vector<int>>dp(n,vector<int>(w+1,0));
+
+    for(int i=0;i<=w;i++){
+        dp[0][i]=i/weight[0]*profit[0];
+    }  
+
+    for(int i=1;i<n;i++){
+        for(int j=1;j<=w;j++){
+            int notake=dp[i-1][j];
+            int take=INT_MIN;
+            if(weight[i]<=j)
+              take=profit[i]+dp[i][j-weight[i]];
+
+            dp[i][j]=max(take,notake);  
+        }
+    }
+    return dp[n-1][w];
+}
+
+
+** Also do discuss about 1-D Array Space Optimised Approach. 
