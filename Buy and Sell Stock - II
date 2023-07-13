@@ -1,0 +1,71 @@
+// Problem link:  https://www.codingninjas.com/studio/problems/selling-stock_630282
+
+//Simple Recursion
+long fun(int ind, bool buy, int n, long *values){
+    if(ind==n)
+      return 0;
+    
+    long profit;
+    if(buy){
+       profit=max(-values[ind]+fun(ind+1,0,n,values),0+fun(ind+1,1,n,values)); 
+                                 //purchased              //NOT purchased 
+    } 
+    else{
+       profit=max(values[ind]+fun(ind+1,1,n,values),0+fun(ind+1,0,n,values));
+                                 //Sold                  //NOT Sold                  
+    } 
+    return profit;
+}
+
+long getMaximumProfit(long *values, int n)
+{
+    //Write your code here
+    return fun(0,1,n,values);
+}
+
+
+// Recursion with Memoization ~ Top down Approach
+#include<bits/stdc++.h>
+long fun(int ind, bool buy, int n, long *values,  vector<vector<long>>&dp){
+    if(ind==n)
+      return 0;
+      
+    if(dp[ind][buy]!=-1)
+     return dp[ind][buy];    
+
+    if(buy){
+       dp[ind][buy]=max(-values[ind]+fun(ind+1,0,n,values,dp),0+fun(ind+1,1,n,values,dp)); 
+    } 
+    else{
+       dp[ind][buy]=max(values[ind]+fun(ind+1,1,n,values,dp),0+fun(ind+1,0,n,values,dp)); 
+    } 
+    return dp[ind][buy];
+}
+
+long getMaximumProfit(long *values, int n)
+{
+    //Write your code here
+    vector<vector<long>>dp(n,vector<long>(2,-1));
+    return fun(0,1,n,values,dp);
+}
+
+
+// Bottom up Approach ~ Tabulation
+long getMaximumProfit(long *values, int n)
+{
+    //Write your code here
+    vector<vector<long>>dp(n+1,vector<long>(2,0));
+
+    for(int i=n-1;i>=0;i--){
+      for(int j=0;j<=1;j++){
+         if(j){
+           dp[i][j]=max(-values[i]+dp[i+1][0],dp[i+1][1]);
+         }
+         else{
+           dp[i][j]=max(values[i]+dp[i+1][1],dp[i+1][0]);
+         }
+      }
+    }
+
+    return dp[0][1];   
+}
